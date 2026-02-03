@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Fluxore</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h2>⚡ Fluxore Admin</h2>
+            </div>
+            <div class="nav-links">
+                <span id="welcomeAdmin"></span>
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" onclick="showSection('dashboard')">📊 Dashboard</a></li>
+                <li><a href="#" onclick="showSection('stations')">📍 Stations</a></li>
+                <li><a href="#" onclick="showSection('bookings')">🎫 All Bookings</a></li>
+                <li><a href="#" onclick="showSection('vehicles')">🚗 Vehicle Management</a></li>
+                <li><a href="#" onclick="showSection('pricing')">💰 Pricing</a></li>
+                <li><a href="#" onclick="showSection('settings')">⚙️ Settings</a></li>
+            </ul>
+        </aside>
+
+        <main class="dashboard-main">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="dashboard-section active">
+                <h2>System Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3 id="totalUsers">-</h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📍</div>
+                        <div class="stat-info">
+                            <h3 id="totalStations">-</h3>
+                            <p>Charging Stations</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔌</div>
+                        <div class="stat-info">
+                            <h3 id="availablePorts">-</h3>
+                            <p>Available Ports</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <h3 id="activeBookings">-</h3>
+                            <p>Active Bookings</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-info">
+                            <h3 id="todayBookings">-</h3>
+                            <p>Today's Bookings</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-info">
+                            <h3 id="totalRevenue">₹0</h3>
+                            <p>Total Revenue</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-bookings" style="margin-top: 2rem;">
+                    <h3>Recent Bookings</h3>
+                    <div id="recentBookingsTable"></div>
+                </div>
+            </section>
+
+            <!-- Stations Section -->
+            <section id="stations" class="dashboard-section">
+                <h2>Manage Charging Stations</h2>
+                <button class="btn-primary" onclick="showAddStationForm()">+ Add New Station</button>
+
+                <div id="addStationModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeAddStationForm()">&times;</span>
+                        <h3>Add New Charging Station</h3>
+                        <form id="stationForm">
+                            <div class="form-group">
+                                <label>Station Name *</label>
+                                <input type="text" id="stationName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Address *</label>
+                                <textarea id="stationAddress" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>City *</label>
+                                <input type="text" id="stationCity" required>
+                            </div>
+                            <div class="form-group">
+                                <label>State</label>
+                                <input type="text" id="stationState">
+                            </div>
+                            <div class="form-group">
+                                <label>Pincode</label>
+                                <input type="text" id="stationPincode">
+                            </div>
+                            <div class="form-group">
+                                <label>Number of Ports *</label>
+                                <input type="number" id="totalPorts" min="1" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Add Station</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="stationsList" style="margin-top: 2rem;"></div>
+            </section>
+
+            <!-- All Bookings Section -->
+            <section id="bookings" class="dashboard-section">
+                <h2>All System Bookings</h2>
+                <div id="allBookingsList"></div>
+            </section>
+
+            <!-- Vehicle Management Section -->
+            <section id="vehicles" class="dashboard-section">
+                <h2>Vehicle Management</h2>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <h3>Add Vehicle Make</h3>
+                        <form id="makeForm" class="booking-form">
+                            <div class="form-group">
+                                <label>Make Name *</label>
+                                <input type="text" id="makeName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Country</label>
+                                <input type="text" id="makeCountry">
+                            </div>
+                            <button type="submit" class="btn-primary">Add Make</button>
+                        </form>
+
+                        <h3 style="margin-top: 2rem;">Existing Makes</h3>
+                        <div id="makesList"></div>
+                    </div>
+
+                    <div>
+                        <h3>Add Vehicle Model</h3>
+                        <form id="modelForm" class="booking-form">
+                            <div class="form-group">
+                                <label>Select Make *</label>
+                                <select id="modelMake" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Model Name *</label>
+                                <input type="text" id="modelName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Battery Capacity (kWh) *</label>
+                                <input type="number" step="0.01" id="batteryCapacity" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Charging Rate (kW) *</label>
+                                <input type="number" step="0.01" id="chargingRate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Efficiency (%)</label>
+                                <input type="number" step="0.01" id="efficiency" value="90">
+                            </div>
+                            <div class="form-group">
+                                <label>Year</label>
+                                <input type="number" id="modelYear">
+                            </div>
+                            <button type="submit" class="btn-primary">Add Model</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pricing Section -->
+            <section id="pricing" class="dashboard-section">
+                <h2>Pricing Configuration</h2>
+                <div class="booking-form-container">
+                    <form id="pricingForm" class="booking-form">
+                        <div class="form-group">
+                            <label>Station (leave empty for default pricing)</label>
+                            <select id="pricingStation">
+                                <option value="">Default (All Stations)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Price per kWh (₹)</label>
+                            <input type="number" step="0.01" id="pricePerKwh" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Price per Hour (₹)</label>
+                            <input type="number" step="0.01" id="pricePerHour" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Cancellation Fee (₹)</label>
+                            <input type="number" step="0.01" id="cancellationFee" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Late Cancellation Fee (₹)</label>
+                            <input type="number" step="0.01" id="lateCancellationFee" value="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Effective From</label>
+                            <input type="date" id="effectiveFrom" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Update Pricing</button>
+                    </form>
+                </div>
+
+                <h3 style="margin-top: 2rem;">Current Pricing</h3>
+                <div id="currentPricing"></div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="dashboard-section">
+                <h2>System Settings</h2>
+                <div id="settingsList"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Check admin authentication
+        if (!checkAuth()) {
+            window.location.href = 'login.html';
+        }
+
+        const currentUser = getUser();
+        if (currentUser.role !== 'ADMIN') {
+            alert('Admin access required');
+            window.location.href = 'user-dashboard.html';
+        }
+
+        document.getElementById('welcomeAdmin').textContent = `Admin: ${currentUser.full_name}`;
+
+        // Load dashboard on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadDashboardStats();
+            await loadStations();
+            await loadAllBookings();
+            await loadVehicleManagement();
+            await loadPricingData();
+            await loadSettings();
+        });
+
+        // Load Dashboard Stats
+        async function loadDashboardStats() {
+            try {
+                const stats = await apiRequest('/admin/dashboard/stats');
+                
+                document.getElementById('totalUsers').textContent = stats.total_users || 0;
+                document.getElementById('totalStations').textContent = stats.total_stations || 0;
+                document.getElementById('availablePorts').textContent = stats.available_ports || 0;
+                document.getElementById('activeBookings').textContent = stats.active_bookings || 0;
+                document.getElementById('todayBookings').textContent = stats.today_bookings || 0;
+                document.getElementById('totalRevenue').textContent = '₹' + (stats.total_revenue || 0);
+
+                // Load recent bookings
+                const bookings = await apiRequest('/admin/bookings');
+                const recent = bookings.slice(0, 5);
+                
+                const table = document.getElementById('recentBookingsTable');
+                if (recent.length === 0) {
+                    table.innerHTML = '<p>No bookings yet</p>';
+                } else {
+                    table.innerHTML = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Station</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${recent.map(b => `
+                                    <tr>
+                                        <td>${b.full_name}</td>
+                                        <td>${b.station_name}</td>
+                                        <td>${formatDate(b.booking_date)}</td>
+                                        <td>${formatTime(b.start_time)}</td>
+                                        <td><span class="booking-status status-${b.booking_status.toLowerCase()}">${b.booking_status}</span></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Station Management
+        async function loadStations() {
+            try {
+                const stations = await apiRequest('/stations');
+                const list = document.getElementById('stationsList');
+                
+                list.innerHTML = stations.map(s => `
+                    <div class="station-card">
+                        <h3>${s.station_name}</h3>
+                        <p>📍 ${s.address}, ${s.city}</p>
+                        <p>🔌 Total Ports: ${s.total_ports}</p>
+                        <p>✅ Available: ${s.available_ports || 0}</p>
+                        <p>Status: ${s.is_operational ? '🟢 Operational' : '🔴 Offline'}</p>
+                    </div>
+                `).join('');
+
+                // Populate pricing station dropdown
+                const select = document.getElementById('pricingStation');
+                select.innerHTML = '<option value="">Default (All Stations)</option>' +
+                    stations.map(s => `<option value="${s.station_id}">${s.station_name}</option>`).join('');
+            } catch (error) {
+                console.error('Error loading stations:', error);
+            }
+        }
+
+        window.showAddStationForm = () => {
+            document.getElementById('addStationModal').style.display = 'block';
+        };
+
+        window.closeAddStationForm = () => {
+            document.getElementById('addStationModal').style.display = 'none';
+        };
+
+        document.getElementById('stationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                await apiRequest('/admin/stations', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        station_name: document.getElementById('stationName').value,
+                        address: document.getElementById('stationAddress').value,
+                        city: document.getElementById('stationCity').value,
+                        state: document.getElementById('stationState').value,
+                        pincode: document.getElementById('stationPincode').value,
+                        total_ports: document.getElementById('totalPorts').value
+                    })
+                });
+
+                alert('Station added successfully');
+                closeAddStationForm();
+                loadStations();
+                loadDashboardStats();
+                document.getElementById('stationForm').reset();
+            } catch (error) {
+                alert('Error adding station: ' + error.message);
+            }
+        });
+
+        // Load All Bookings
+        async function loadAllBookings() {
+            try {
+                const bookings = await apiRequest('/admin/bookings');
+                const list = document.getElementById('allBookingsList');
+                
+                if (bookings.length === 0) {
+                    list.innerHTML = '<p>No bookings found</p>';
+                    return;
+                }
+
+                list.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Vehicle</th>
+                                <th>Station</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${bookings.map(b => `
+                                <tr>
+                                    <td>${b.booking_id}</td>
+                                    <td>${b.full_name}</td>
+                                    <td>${b.make_name} ${b.model_name}</td>
+                                    <td>${b.station_name}</td>
+                                    <td>${formatDate(b.booking_date)}</td>
+                                    <td>${formatTime(b.start_time)}</td>
+                                    <td><span class="booking-status status-${b.booking_status.toLowerCase()}">${b.booking_status}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+            }
+        }
+
+        // Vehicle Management
+        async function loadVehicleManagement() {
+            try {
+                const makes = await apiRequest('/vehicles/makes');
+                
+                // Populate makes list
+                document.getElementById('makesList').innerHTML = makes.map(m => `
+                    <div class="station-card">
+                        <strong>${m.make_name}</strong>
+                        <p>${m.country || 'N/A'}</p>
+                    </div>
+                `).join('');
+
+                // Populate model make dropdown
+                document.getElementById('modelMake').innerHTML = '<option value="">Select Make</option>' +
+                    makes.map(m => `<option value="${m.make_id}">${m.make_name}</option>`).join('');
+            } catch (error) {
+                console.error('Error loading vehicles:', error);
+            }
+        }
+
+        document.getElementById('makeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                await apiRequest('/admin/vehicle-makes', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        make_name: document.getElementById('makeName').value,
+                        country: document.getElementById('makeCountry').value
+                    })
+                });
+
+                alert('Vehicle make added successfully');
+                loadVehicleManagement();
+                document.getElementById('makeForm').reset();
+            } catch (error) {
+                alert('Error adding make: ' + error.message);
+            }
+        });
+
+        document.getElementById('modelForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                await apiRequest('/admin/vehicle-models', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        make_id: document.getElementById('modelMake').value,
+                        model_name: document.getElementById('modelName').value,
+                        battery_capacity_kwh: document.getElementById('batteryCapacity').value,
+                        charging_rate_kw: document.getElementById('chargingRate').value,
+                        charging_efficiency: document.getElementById('efficiency').value,
+                        year: document.getElementById('modelYear').value
+                    })
+                });
+
+                alert('Vehicle model added successfully');
+                document.getElementById('modelForm').reset();
+            } catch (error) {
+                alert('Error adding model: ' + error.message);
+            }
+        });
+
+        // Pricing Management
+        async function loadPricingData() {
+            // Set today as default date
+            document.getElementById('effectiveFrom').value = new Date().toISOString().split('T')[0];
+        }
+
+        document.getElementById('pricingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const stationId = document.getElementById('pricingStation').value;
+                
+                await apiRequest('/admin/pricing', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        station_id: stationId || null,
+                        price_per_kwh: document.getElementById('pricePerKwh').value,
+                        price_per_hour: document.getElementById('pricePerHour').value,
+                        cancellation_fee: document.getElementById('cancellationFee').value,
+                        late_cancellation_fee: document.getElementById('lateCancellationFee').value,
+                        effective_from: document.getElementById('effectiveFrom').value
+                    })
+                });
+
+                alert('Pricing updated successfully');
+            } catch (error) {
+                alert('Error updating pricing: ' + error.message);
+            }
+        });
+
+        // Load Settings
+        async function loadSettings() {
+            try {
+                const settings = await apiRequest('/admin/settings');
+                const list = document.getElementById('settingsList');
+                
+                list.innerHTML = settings.map(s => `
+                    <div class="station-card">
+                        <h4>${s.setting_key}</h4>
+                        <p>${s.description}</p>
+                        <p><strong>Value:</strong> ${s.setting_value}</p>
+                        <p><small>Type: ${s.setting_type}</small></p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+    </script>
+</body>
+</html>

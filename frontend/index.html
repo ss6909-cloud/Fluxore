@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxore - EV Charging Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h2>⚡ Fluxore</h2>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+                <a href="#stations">Stations</a>
+                <a href="login.html" class="btn-primary">Login</a>
+                <a href="register.html" class="btn-secondary">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Welcome to Fluxore</h1>
+                <p class="hero-subtitle">Smart EV Charging Station Management</p>
+                <p>Book charging slots, manage your EV, and charge with ease</p>
+                <div class="hero-buttons">
+                    <a href="register.html" class="btn-primary btn-large">Get Started</a>
+                    <a href="#stations" class="btn-secondary btn-large">View Stations</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose Fluxore?</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h3>Multiple Locations</h3>
+                    <p>Find charging stations across the city at convenient locations</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⏰</div>
+                    <h3>Easy Booking</h3>
+                    <p>Book your charging slot in advance and avoid waiting</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚗</div>
+                    <h3>Multi-Vehicle Support</h3>
+                    <p>Manage multiple EVs with different charging requirements</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Fast Charging</h3>
+                    <p>Access to CCS, Type 2, and CHAdeMO charging ports</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💳</div>
+                    <h3>Flexible Payment</h3>
+                    <p>Pay per kWh or per hour with multiple payment options</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Track History</h3>
+                    <p>View your charging history and manage bookings easily</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stations Preview -->
+    <section id="stations" class="stations-preview">
+        <div class="container">
+            <h2 class="section-title">Our Charging Stations</h2>
+            <p class="section-subtitle">Find a station near you</p>
+            <div class="stations-grid" id="stationsGrid">
+                <div class="station-card skeleton">Loading...</div>
+                <div class="station-card skeleton">Loading...</div>
+                <div class="station-card skeleton">Loading...</div>
+            </div>
+            <div class="text-center">
+                <a href="login.html" class="btn-primary">Login to Book</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>⚡ Fluxore</h3>
+                    <p>Smart EV Charging Management System</p>
+                    <p>DBMS Mini Project 2024</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="#home">Home</a>
+                    <a href="#features">Features</a>
+                    <a href="#stations">Stations</a>
+                    <a href="login.html">Login</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Email: support@fluxore.com</p>
+                    <p>Phone: 1800-123-4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Fluxore. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Load stations on home page
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('http://localhost:3000/api/stations');
+                const stations = await response.json();
+                
+                const grid = document.getElementById('stationsGrid');
+                grid.innerHTML = '';
+
+                stations.slice(0, 3).forEach(station => {
+                    const card = document.createElement('div');
+                    card.className = 'station-card';
+                    card.innerHTML = `
+                        <h3>${station.station_name}</h3>
+                        <p class="station-location">📍 ${station.city}</p>
+                        <p>${station.address}</p>
+                        <div class="station-info">
+                            <span>🔌 ${station.total_ports} Ports</span>
+                            <span>✅ ${station.available_ports || 0} Available</span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading stations:', error);
+            }
+        });
+    </script>
+</body>
+</html>

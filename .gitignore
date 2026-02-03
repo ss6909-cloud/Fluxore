@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Operating System
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Build and dist
+dist/
+build/
+.next/
+out/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+database.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS-specific
+.env.local
+.cache/
+
+# Sensitive files
+credentials.json
+config/credentials.js

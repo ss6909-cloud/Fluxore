@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Fluxore</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h2>⚡ Fluxore</h2>
+            </div>
+            <div class="nav-links">
+                <span id="welcomeUser"></span>
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" onclick="showSection('overview')">📊 Overview</a></li>
+                <li><a href="#" onclick="showSection('stations')">📍 Find Stations</a></li>
+                <li><a href="#" onclick="showSection('book')">📅 Book Slot</a></li>
+                <li><a href="#" onclick="showSection('bookings')">🎫 My Bookings</a></li>
+                <li><a href="#" onclick="showSection('vehicles')">🚗 My Vehicles</a></li>
+            </ul>
+        </aside>
+
+        <main class="dashboard-main">
+            <!-- Overview Section -->
+            <section id="overview" class="dashboard-section active">
+                <h2>Welcome Back!</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🎫</div>
+                        <div class="stat-info">
+                            <h3 id="totalBookings">0</h3>
+                            <p>Total Bookings</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <h3 id="upcomingBookings">0</h3>
+                            <p>Upcoming</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🚗</div>
+                        <div class="stat-info">
+                            <h3 id="myVehicles">0</h3>
+                            <p>My Vehicles</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-bookings">
+                    <h3>Recent Bookings</h3>
+                    <div id="recentBookingsList"></div>
+                </div>
+            </section>
+
+            <!-- Stations Section -->
+            <section id="stations" class="dashboard-section">
+                <h2>Find Charging Stations</h2>
+                <div class="stations-grid" id="stationsList"></div>
+            </section>
+
+            <!-- Book Section -->
+            <section id="book" class="dashboard-section">
+                <h2>Book Charging Slot</h2>
+                <div class="booking-form-container">
+                    <form id="bookingForm" class="booking-form">
+                        <div class="form-group">
+                            <label>Select Station *</label>
+                            <select id="bookStation" required></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Select Your Vehicle *</label>
+                            <select id="bookVehicle" required></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Booking Date *</label>
+                            <input type="date" id="bookDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Current Battery Level (%) *</label>
+                            <input type="number" id="currentCharge" min="0" max="100" value="20" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Target Battery Level (%) *</label>
+                            <input type="number" id="targetCharge" min="0" max="100" value="80" required>
+                        </div>
+
+                        <button type="button" class="btn-secondary" onclick="checkAvailability()">Check Available Slots</button>
+
+                        <div id="availableSlots" style="display: none; margin-top: 20px;">
+                            <h3>Available Ports & Time Slots</h3>
+                            <div id="slotsGrid"></div>
+                        </div>
+
+                        <div id="bookingError" class="error-message" style="display: none;"></div>
+                        <div id="bookingSuccess" class="success-message" style="display: none;"></div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Bookings Section -->
+            <section id="bookings" class="dashboard-section">
+                <h2>My Bookings</h2>
+                <div class="filter-tabs">
+                    <button class="tab-btn active" onclick="filterBookings('all')">All</button>
+                    <button class="tab-btn" onclick="filterBookings('CONFIRMED')">Upcoming</button>
+                    <button class="tab-btn" onclick="filterBookings('COMPLETED')">Completed</button>
+                    <button class="tab-btn" onclick="filterBookings('CANCELLED')">Cancelled</button>
+                </div>
+                <div id="bookingsList"></div>
+            </section>
+
+            <!-- Vehicles Section -->
+            <section id="vehicles" class="dashboard-section">
+                <h2>My Vehicles</h2>
+                <button class="btn-primary" onclick="showAddVehicleForm()">+ Add Vehicle</button>
+                
+                <div id="addVehicleForm" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeAddVehicleForm()">&times;</span>
+                        <h3>Add New Vehicle</h3>
+                        <form id="vehicleForm">
+                            <div class="form-group">
+                                <label>Make *</label>
+                                <select id="vehicleMake" required onchange="loadModels()"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Model *</label>
+                                <select id="vehicleModel" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>License Plate</label>
+                                <input type="text" id="licensePlate">
+                            </div>
+                            <button type="submit" class="btn-primary">Add Vehicle</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="vehiclesList"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/user-dashboard.js"></script>
+</body>
+</html>
