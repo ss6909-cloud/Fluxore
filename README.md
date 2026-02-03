@@ -554,14 +554,14 @@ This is an educational project for DBMS mini project purposes.
 
 ## 👥 Contributors
 
-- Your Name - Complete System Development
+- SABAREESH S NAIR
 
 ## 🙏 Acknowledgments
 
-- College/University Name
+- SRM INSTITUTE OF SCIENCE AND TECHNOLOGY
 - Course: Database Management Systems
-- Instructor: [Name]
-- Year: 2024
+- Instructor: [KARTHIKEYAN]
+- Year: 2026
 
 ## 📞 Support
 
